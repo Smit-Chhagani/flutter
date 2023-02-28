@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_design/SignUpPage.dart';
+import 'package:mobile_design/dimension.dart';
 
 class LoginPage extends StatelessWidget {
   @override

@@ -1,9 +1,16 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mobile_design/ProductList2/product1.dart';
 import 'package:mobile_design/ProductList1/productDetail.dart';
 import 'package:mobile_design/ProductList1/productDetail2.dart';
 import 'package:mobile_design/ProductList1/productDetail3.dart';
 import 'package:mobile_design/ProductList1/productDetail4.dart';
+import 'package:mobile_design/addProduct.dart';
+import 'package:mobile_design/model.dart';
+
+import '../model2.dart';
+
 
 class homeScreen extends StatefulWidget {
   @override
@@ -12,6 +19,8 @@ class homeScreen extends StatefulWidget {
 
 class _homeScreen extends State<homeScreen> {
   int _currentPage = 0;
+  List<Model> model = [];
+  List<ListView2> listView2 = [];
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +44,7 @@ class _homeScreen extends State<homeScreen> {
                           });
                         },
                         children: <Widget>[
+                          //1st PageView Scroll Page
                           Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -76,6 +86,8 @@ class _homeScreen extends State<homeScreen> {
                               ),
                             ),
                           ),
+
+                          //2nd Pageview Scroll Page
                           Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -117,6 +129,8 @@ class _homeScreen extends State<homeScreen> {
                               ),
                             ),
                           ),
+
+                          //3rd PageView Scroll Page
                           Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -158,6 +172,8 @@ class _homeScreen extends State<homeScreen> {
                               ),
                             ),
                           ),
+
+                          //4th PageView Scroll Page
                           Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -201,6 +217,8 @@ class _homeScreen extends State<homeScreen> {
                           ),
                         ],
                       ),
+
+                      //Dots Indicating
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Container(
@@ -211,6 +229,8 @@ class _homeScreen extends State<homeScreen> {
                           ),
                         ),
                       ),
+
+                      //Shop Now Button
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Container(
@@ -222,12 +242,15 @@ class _homeScreen extends State<homeScreen> {
                           margin: EdgeInsets.only(bottom: 10, right: 10),
                           child: TextButton(
                             onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProductDetail2()));
                             },
                             child: Text(
                               'Shop Now',
                               style:
-                              TextStyle(fontSize: 15, color: Colors.white),
+                                  TextStyle(fontSize: 15, color: Colors.white),
                             ),
                           ),
                         ),
@@ -235,10 +258,11 @@ class _homeScreen extends State<homeScreen> {
                     ],
                   ),
                 ),
-                // Top Trends Row
                 SizedBox(
                   height: 20,
                 ),
+
+                // Top Trends Row
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   // crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,6 +275,8 @@ class _homeScreen extends State<homeScreen> {
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
+
+                    //View All option
                     Container(
                       margin: EdgeInsets.only(left: 150),
                       child: TextButton(
@@ -264,168 +290,203 @@ class _homeScreen extends State<homeScreen> {
                     ),
                   ],
                 ),
+
+                //List View Of Top Trends
                 Container(
                   height: 225,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ProductDetail()));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.only(left: 30),
-                                width: 180,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/detail.jpg'),
-                                    fit: BoxFit.cover,
+                  child: FutureBuilder(
+                      future: getData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: model.length,
+                              itemBuilder: (context, index) {
+                                final product = model[index];
+                                return Container(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProductDetailsScreen(productId: product.id)));
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.only(left: 30),
+                                                width: 180,
+                                                height: 180,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(
+                                                        '${product.productImage}'),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                              //Name Of 1st Product In ListView
+                                              Container(
+                                                //margin: EdgeInsets.only(right: 10),
+                                                child: Text(
+                                                  '${product.productName}',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              //Price Of 1st Product In ListView
+                                              Container(
+                                                //margin: EdgeInsets.only(right: 70),
+                                                child: Text(
+                                                  '${product.productPrice}',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 50),
-                              child: Text(
-                                'Tulle Skirt',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(right: 70),
-                              child: Text(
-                                '\$45.00',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProductDetail2()));
-                          },
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 30),
-                                width: 180,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/product1.webp'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 50),
-                                child: Text(
-                                  'Men T-Shirt',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 70),
-                                child: Text(
-                                  '\$45.00',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
-                          },
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 30),
-                                width: 180,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/product3.webp'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 50),
-                                child: Text(
-                                  'Tulle Skirt',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 70),
-                                child: Text(
-                                  '\$45.00',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail4()));
-                          },
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(left: 30),
-                                width: 180,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/home.jpg'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 50),
-                                child: Text(
-                                  'Tulle Skirt',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 70),
-                                child: Text(
-                                  '\$45.00',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                                );
+                              }
+                              //Image Of 1st Product And Click Event With Some Details
+
+                              // //Image Of 2nd Product And Click Event With Some Details
+                              // Container(
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) => ProductDetail2()));
+                              //     },
+                              //     child: Column(
+                              //       children: [
+                              //         Container(
+                              //           margin: EdgeInsets.only(left: 30),
+                              //           width: 180,
+                              //           height: 180,
+                              //           decoration: BoxDecoration(
+                              //             borderRadius: BorderRadius.circular(20),
+                              //             image: DecorationImage(
+                              //               image: AssetImage('assets/product1.webp'),
+                              //               fit: BoxFit.cover,
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 50),
+                              //           child: Text(
+                              //             'Men T-Shirt',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 70),
+                              //           child: Text(
+                              //             '\$45.00',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                              // //Image Of 3rd Product And Click Event With Some Details
+                              // Container(
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
+                              //     },
+                              //     child: Column(
+                              //       children: [
+                              //         Container(
+                              //           margin: EdgeInsets.only(left: 30),
+                              //           width: 180,
+                              //           height: 180,
+                              //           decoration: BoxDecoration(
+                              //             borderRadius: BorderRadius.circular(20),
+                              //             image: DecorationImage(
+                              //               image: AssetImage('assets/product3.webp'),
+                              //               fit: BoxFit.cover,
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 50),
+                              //           child: Text(
+                              //             'Tulle Skirt',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 70),
+                              //           child: Text(
+                              //             '\$45.00',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                              // //Image Of 4th Product And Click Event With Some Details
+                              // Container(
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail4()));
+                              //     },
+                              //     child: Column(
+                              //       children: [
+                              //         Container(
+                              //           margin: EdgeInsets.only(left: 30),
+                              //           width: 180,
+                              //           height: 180,
+                              //           decoration: BoxDecoration(
+                              //             borderRadius: BorderRadius.circular(20),
+                              //             image: DecorationImage(
+                              //               image: AssetImage('assets/home.jpg'),
+                              //               fit: BoxFit.cover,
+                              //             ),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 50),
+                              //           child: Text(
+                              //             'Tulle Skirt',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //         Container(
+                              //           margin: EdgeInsets.only(right: 70),
+                              //           child: Text(
+                              //             '\$45.00',
+                              //             style: TextStyle(fontWeight: FontWeight.bold),
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                              );
+                        } else {
+                          return Center(child: CircularProgressIndicator(),);
+                        }
+                      }),
                 ),
+
+                //Row with Most Popular and view all option
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   // crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,192 +512,245 @@ class _homeScreen extends State<homeScreen> {
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    Container(
-                      height: 225,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          Container(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>Product1()));
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    width: 180,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/watch.webp'),
-                                        fit: BoxFit.cover,
+                Container(
+                  height: 225,
+                  child: FutureBuilder(
+                    future: getData(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData){
+                        return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: model.length,
+                            itemBuilder: (context, index){
+                              return Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => ProductDetail2()));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(left: 30),
+                                              width: 180,
+                                              height: 180,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                  image: NetworkImage('${model[index].productImage}'),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            //Name Of 1st Product In ListView
+                                            Container(
+                                              //margin: EdgeInsets.only(right: 10),
+                                              child: Text(
+                                                '${model[index].productName}',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                            //Price Of 1st Product In ListView
+                                            Container(
+                                              //margin: EdgeInsets.only(right: 70),
+                                              child: Text(
+                                                '${model[index].productPrice}',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 50),
-                                    child: Text(
-                                      'Tulle Skirt',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 70),
-                                    child: Text(
-                                      '\$45.00',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    width: 180,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/home.jpg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 50),
-                                    child: Text(
-                                      'Tulle Skirt',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 70),
-                                    child: Text(
-                                      '\$45.00',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    width: 180,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/home.jpg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 50),
-                                    child: Text(
-                                      'Tulle Skirt',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 70),
-                                    child: Text(
-                                      '\$45.00',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              // onTap: (){
-                              //
-                              // },
-                            ),
-                          ),
-                          Container(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
-                              },
-                              child: Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    width: 180,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/home.jpg'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 50),
-                                    child: Text(
-                                      'Tulle Skirt',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 70),
-                                    child: Text(
-                                      '\$45.00',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                                  ],
+                                ),
+                              );
+                            }
+                          //Image Of 1st Product And Click Event With Some Details
+
+                          // //Image Of 2nd Product And Click Event With Some Details
+                          // Container(
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) => ProductDetail2()));
+                          //     },
+                          //     child: Column(
+                          //       children: [
+                          //         Container(
+                          //           margin: EdgeInsets.only(left: 30),
+                          //           width: 180,
+                          //           height: 180,
+                          //           decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(20),
+                          //             image: DecorationImage(
+                          //               image: AssetImage('assets/product1.webp'),
+                          //               fit: BoxFit.cover,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 50),
+                          //           child: Text(
+                          //             'Men T-Shirt',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 70),
+                          //           child: Text(
+                          //             '\$45.00',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                          // //Image Of 3rd Product And Click Event With Some Details
+                          // Container(
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail3()));
+                          //     },
+                          //     child: Column(
+                          //       children: [
+                          //         Container(
+                          //           margin: EdgeInsets.only(left: 30),
+                          //           width: 180,
+                          //           height: 180,
+                          //           decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(20),
+                          //             image: DecorationImage(
+                          //               image: AssetImage('assets/product3.webp'),
+                          //               fit: BoxFit.cover,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 50),
+                          //           child: Text(
+                          //             'Tulle Skirt',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 70),
+                          //           child: Text(
+                          //             '\$45.00',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                          // //Image Of 4th Product And Click Event With Some Details
+                          // Container(
+                          //   child: InkWell(
+                          //     onTap: () {
+                          //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProductDetail4()));
+                          //     },
+                          //     child: Column(
+                          //       children: [
+                          //         Container(
+                          //           margin: EdgeInsets.only(left: 30),
+                          //           width: 180,
+                          //           height: 180,
+                          //           decoration: BoxDecoration(
+                          //             borderRadius: BorderRadius.circular(20),
+                          //             image: DecorationImage(
+                          //               image: AssetImage('assets/home.jpg'),
+                          //               fit: BoxFit.cover,
+                          //             ),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 50),
+                          //           child: Text(
+                          //             'Tulle Skirt',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 70),
+                          //           child: Text(
+                          //             '\$45.00',
+                          //             style: TextStyle(fontWeight: FontWeight.bold),
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                        );
+                      }
+                      else{
+                        return Center(child: CircularProgressIndicator(),);
+                      }
+                    }
+                  ),
                 ),
               ],
             ),
           ],
         ),
       ),
+
+      //Bottom navigationBar
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_bag), label: 'Shop'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'add product'),
         ],
+        onTap: (index) {
+          if (index == 2) {
+            // Check if the third item was tapped
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => AddProductPage()));
+          }
+        },
       ),
     );
   }
+
+  Future<List<Model>> getData() async {
+    final response = await http
+        .get(Uri.parse('https://632158d682f8687273afebf3.mockapi.io/Products'));
+    var data = jsonDecode(response.body.toString());
+    if (response.statusCode == 200) {
+      for (Map<String, dynamic> index in data) {
+        model.add(Model.fromJson(index));
+      }
+      return model;
+    } else {
+      return model;
+    }
+  }
+  //
+  // Future<List<ListView2>> getData2() async {
+  //   final response = await http
+  //       .get(Uri.parse('https://632158d682f8687273afebf3.mockapi.io/Project'));
+  //   var data = jsonDecode(response.body.toString());
+  //   print('status code is :${response.statusCode}');
+  //   if (response.statusCode == 200) {
+  //     for (Map<String, dynamic> index in data) {
+  //       welcome.add(Welcome.fromJson(index));
+  //     }
+  //     return listView2;
+  //   } else {
+  //     return listView2;
+  //   }
+  // }
 }
 
 class DotsIndicator extends StatelessWidget {
@@ -669,3 +783,81 @@ class DotsIndicator extends StatelessWidget {
   }
 }
 
+//
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
+//
+// class _HomeScreenState extends State<HomeScreen> {
+//   List<dynamic> users = [];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('API'),
+//       ),
+//       body: Stack(
+//         children: [
+//           ListView.builder(
+//             itemCount: users.length,
+//             itemBuilder: (context, index) {
+//               final user = users[index];
+//               final ProductName = user['ProductName'];
+//               final ProductPrice = user['ProductPrice'];
+//               final imageUrl = user['ProductImage'];
+//
+//               return Column(
+//                 children: [
+//                   Container(
+//                     child: ListTile(
+//                       leading: ClipRRect(
+//                         borderRadius: BorderRadius.circular(100),
+//                         child: Container(
+//                             height: 100,
+//                             width: 100,
+//                             child: Image.network(imageUrl)),
+//                       ),
+//                       title: Text(ProductName),
+//                       subtitle: Text(ProductPrice),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             },
+//           ),
+//           ElevatedButton(onPressed: (){
+//             Navigator.pushNamed(context, '/addUser');
+//           }, child: Text('add')),
+//         ],
+//       ),
+//       floatingActionButton: FloatingActionButton.extended(
+//         onPressed: fetchUsers,
+//         label: Text('Get Data'),
+//       ),
+//     );
+//   }
+//   Future<void> fetchUsers() async {
+//     print('fetchUsers Called');
+//     final url = 'https://632158d682f8687273afebf3.mockapi.io/Project';
+//     final uri = Uri.parse(url);
+//     final response = await http.get(uri);
+//     final body = response.body;
+//     final json = jsonDecode(body);
+//     setState(() {
+//       users = json;
+//     });
+//     print('fetchUsers Completed');
+//   }
+//
+// // Future<void> addUser() async {
+// //   print('Add user called');
+// //   // final route = MaterialPageRoute(
+// //   //   builder: (context) => addUserPage(),
+// //   // );
+// //   // Navigator.push(context, route);
+// // }
+// }

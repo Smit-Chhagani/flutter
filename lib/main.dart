@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/signup': (context) => SignUpPage(),
         '/home': (context) => homeScreen(),
-        '/productDetail': (context) => ProductDetail(),
+        '/productDetail': (context) => ProductDetailsScreen(productId: ''),
         '/productDetail2': (context) => ProductDetail2(),
         '/productDetail3': (context) => ProductDetail3(),
         '/productDetail4': (context) => ProductDetail4(),
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: homeScreen(),
     );
   }
 }
