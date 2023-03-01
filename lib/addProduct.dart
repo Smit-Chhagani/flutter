@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 class AddProductPage extends StatefulWidget {
   @override
   _AddProductPageState createState() => _AddProductPageState();
@@ -104,12 +105,16 @@ class _AddProductPageState extends State<AddProductPage> {
               SizedBox(height: 16),
               ElevatedButton(
                 child: Text('Add Product'),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    addProduct(productName, productImage, double.parse(productPrice), productDescription, productCategory);
-                    Navigator.pop(context);
-                    print('Data Added');
+                   await addProduct(
+                        productName,
+                        productImage,
+                        double.parse(productPrice),
+                        productDescription,
+                        productCategory);
+                    Navigator.of(context).pop(true);
                   }
                 },
               ),
@@ -121,23 +126,25 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 }
 
-Future<void> addProduct(String productName, String productImage, double productPrice, String productDescription, String productCategory) async {
-  final response = await http.post(
+Future<http.Response> addProduct(
+    String productName,
+    String productImage,
+    double productPrice,
+    String productDescription,
+    String productCategory) async {
+  http.Response response = await http.post(
     Uri.parse('https://632158d682f8687273afebf3.mockapi.io/Products'),
     body: {
       'ProductName': productName,
       'ProductImage': productImage,
       'ProductPrice': productPrice.toString(),
-      'ProductDescription' : productDescription,
-      'ProductCategory' : productCategory,
+      'ProductDescription': productDescription,
+      'ProductCategory': productCategory,
     },
   );
-  print('status:${response.statusCode}');
-  if (response.statusCode != 201) {
-    throw Exception('Failed to add product');
-  }
+  print(response.body);
+  return response;
 }
-
 
 //
 // 256 GB ROM

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_design/HomeScreen/homeScreen.dart';
 
 import '../model.dart';
+
 //
 //
 // class ProductDetail extends StatefulWidget {
@@ -278,8 +279,6 @@ import '../model.dart';
 //   }
 // }
 
-
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -330,6 +329,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   late Future<Product> _product;
   int _rating = 4;
   int _selectedColor = 0;
+
   @override
   void initState() {
     super.initState();
@@ -337,8 +337,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Future<Product> _fetchProduct() async {
-    final response =
-    await http.get(Uri.parse('https://632158d682f8687273afebf3.mockapi.io/Products/${widget.productId}'));
+    final response = await http.get(Uri.parse(
+        'https://632158d682f8687273afebf3.mockapi.io/Products/${widget.productId}'));
     print('response is ${response}');
     final jsonData = json.decode(response.body) as Map<String, dynamic>;
     return Product.fromJson(jsonData);
@@ -375,7 +375,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               margin: EdgeInsets.only(left: 25, top: 20),
                               child: IconButton(
                                 onPressed: () {
-                                  Navigator.pop(context, MaterialPageRoute(builder: (context)=>homeScreen()));
+                                  Navigator.pop(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => homeScreen()));
                                 },
                                 icon: Icon(Icons.arrow_back_ios),
                                 iconSize: 40,
@@ -433,12 +436,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               padding: EdgeInsets.only(left: 20),
                               child: IconButton(
                                 icon: Icon(
-                                  index < _rating ? Icons.star : Icons.star_border,
+                                  index < _rating
+                                      ? Icons.star
+                                      : Icons.star_border,
                                   color: Colors.amber,
                                 ),
                                 onPressed: () {
                                   setState(
-                                        () {
+                                    () {
                                       _rating = index + 1;
                                     },
                                   );
@@ -463,7 +468,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                                     SizedBox(height: 6),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         GestureDetector(
                                           onTap: () {
@@ -477,7 +483,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             width: 24,
                                             decoration: BoxDecoration(
                                               color: Colors.red,
-                                              borderRadius: BorderRadius.circular(24),
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
                                               border: Border.all(
                                                 color: _selectedColor == 0
                                                     ? Colors.black
@@ -499,7 +506,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             width: 24,
                                             decoration: BoxDecoration(
                                               color: Colors.green,
-                                              borderRadius: BorderRadius.circular(24),
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
                                               border: Border.all(
                                                 color: _selectedColor == 1
                                                     ? Colors.black
@@ -521,7 +529,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             width: 24,
                                             decoration: BoxDecoration(
                                               color: Colors.blue,
-                                              borderRadius: BorderRadius.circular(24),
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
                                               border: Border.all(
                                                 color: _selectedColor == 2
                                                     ? Colors.black
@@ -541,7 +550,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             Container(
                               margin: EdgeInsets.only(left: 90),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
@@ -549,7 +559,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       color: Colors.black,
                                       child: IconButton(
                                         iconSize: 35,
-                                        icon: Icon(Icons.thumb_up,color: Colors.white,),
+                                        icon: Icon(
+                                          Icons.thumb_up,
+                                          color: Colors.white,
+                                        ),
                                         onPressed: () {
                                           // add your onPressed code here for like button
                                         },
@@ -563,7 +576,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       color: Colors.black,
                                       child: IconButton(
                                         iconSize: 35,
-                                        icon: Icon(Icons.shopping_bag,color: Colors.white,),
+                                        icon: Icon(
+                                          Icons.shopping_bag,
+                                          color: Colors.white,
+                                        ),
                                         onPressed: () {
                                           // add your onPressed code here for shop button
                                         },
@@ -581,7 +597,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           padding: EdgeInsets.only(left: 30),
                           child: Text(
                             '${product.productDescription}',
-                            style: TextStyle(color: Colors.blue,fontSize: 20),),
+                            style: TextStyle(color: Colors.blue, fontSize: 20),
+                          ),
                         ),
                       ],
                     ),
